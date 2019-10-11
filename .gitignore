@@ -6,6 +6,7 @@
 *.dylib
 
 *.code-workspace
+*.sqlite
 
 node_modules/*
 temp/*

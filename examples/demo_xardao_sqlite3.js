@@ -18,7 +18,7 @@ function test1(next) {
     test_openConn();
     
     function test_openConn() {
-        cn.open('temp/test_database.sqlite', 
+        cn.open('test_database.sqlite', 
             function (err) { 
                 if (err) { logError(err); }
                 else { console.log('Database opened'); test_exec() }

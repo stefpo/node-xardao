@@ -2,7 +2,7 @@
   "name": "crda",
   "version": "1.0.0",
   "description": "Common Relational Data Access library",
-  "main": "index.js",
+  "main": "./lib/xardao.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

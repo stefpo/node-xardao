@@ -4,14 +4,15 @@
   "description": "Common Relational Data Access library",
   "main": "./lib/xardao.js",
   "scripts": {
-    "demo_sqlite3":"cd examples && node demo_xardao_sqlite3.js",
-    "demo_mariadb":"cd examples && node demo_xardao_mariadb.js",
+    "demo_sqlite3": "cd examples && node demo_xardao_sqlite3.js",
+    "demo_mariadb": "cd examples && node demo_xardao_mariadb.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Stephane Potelle",
   "license": "MIT",
   "dependencies": {
     "mysql": "^2.17.1",
+    "pg": "^7.12.1",
     "sqlite3": "^4.1.0"
   }
 }

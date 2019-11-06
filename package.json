@@ -1,5 +1,5 @@
 {
-  "name": "crda",
+  "name": "xardao",
   "version": "0.1.0",
   "description": "Common Relational Data Access library",
   "main": "./lib/xardao.js",
@@ -13,6 +13,7 @@
   "dependencies": {
     "mysql": "^2.17.1",
     "pg": "^7.12.1",
-    "sqlite3": "^4.1.0"
+    "sqlite3": "^4.1.0",
+    "tedious": "^6.6.0"
   }
 }

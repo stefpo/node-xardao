@@ -1,6 +1,6 @@
 /********************************************************************************
- * test_dbao_sqlite3.js
- * Test and demo Sqlite3 dao library
+ * test_dbao_mssql.js
+ * Test and demo MSSQL dao library
  * 
  * Author : Stephane Potelle 
  * Email  : stephane.potelle@gmail.com
@@ -9,7 +9,7 @@
 var rdao = require ('../lib/xardao.js'); 
 var promisify = require('util').promisify;
 
-cn = new rdao.Connection('mariadb');
+cn = new rdao.Connection('mssql');
 
 function logError(e) {
     console.log('Error '+ e)
@@ -41,10 +41,14 @@ async function test1(next) {
     let retErr 
     try {
         let contactBO=createContactBO(cn) 
-        await cn.openAsync({ host: 'localhost', user: 'root', password: 'xenon21', database: 'apptest'})
-        await cn.execAsync('start transaction')
-        await cn.execAsync('drop table if exists contact')
-        await cn.execAsync('create table contact( Id integer primary key auto_increment, Firstname varchar(50), Lastname varchar(50), Birthdate timestamp, Age int)')
+        await cn.openAsync({ server: 'localhost', 
+                            authentication: { type: 'default',
+                                options: { userName: 'sa', password: 'Xenon21$'} },
+                            options: { encrypt:true, database: 'apptest'}}
+                            )
+        await cn.execAsync('if exists ( select * from sys.tables where name=\'contact\') drop table contact')
+        await cn.execAsync('create table contact( Id integer primary key identity, Firstname varchar(50), Lastname varchar(50), Birthdate datetime, Age int)')
+        //await cn.execAsync('begin transaction')
         let tli = await contactBO.createAsync({
                 Firstname: 'James', 
                 Lastname: 'O\'Connor', 
@@ -62,7 +66,7 @@ async function test1(next) {
         }
 
         await contactBO.updateAsync({Id:2, Age: 57})
-        await cn.execAsync('commit')
+        //await cn.execAsync('commit')
 
         let o = await contactBO.readAsync(2)
         console.log( JSON.stringify(o))

@@ -5,7 +5,10 @@
  * Author : Stephane Potelle 
  * Email  : stephane.potelle@gmail.com
 ********************************************************************************/
-rdao = require ('../lib/xardao.js'); 
+
+
+var rdao = require ('../lib/xardao.js'); 
+var promisify = require('util').promisify;
 
 cn = new rdao.Connection('pg');
 
@@ -13,92 +16,89 @@ function logError(e) {
     console.log('Error '+ e)
 }
 
-function test1(next) {
+process.on('unhandledRejection', function(err) {
+    logError('unhandledRejection:' + err.stack);
+});
 
-    test_openConn();
+/* Example of creating a business object 
+   as a part of the model */
 
-  
-    function test_openConn() {
-        cn.open({ host: 'localhost', user: 'apptestusr', password: 'apptestpw', database: 'apptest'}, 
-            function (err) { 
-                if (err) { logError(err); closeDatabase() }
-                else { console.log('Database opened'); test_exec(); }
-                },
-        );
+function createContactBO(conn) {
+    let bo = conn.createCRUDAdapter('contact','id')
+    
+    bo.updateValidate = function (p, callback ){
+        if ( p.Age  >= 63 ) callback(new Error("Age must be lower than 63"))
+        else callback()
     }
 
-    function test_exec() {
-        let insertSql= "insert into contact (Firstname, Lastname, Birthdate, Age) values (@Firstname, @Lastname, @Birthdate, @Age) returning id"
-        let script =  [];
-        //cn.debugMode = false;
-        script.push("start transaction");
-        script.push("drop table if exists contact");
-        script.push("create table contact( Id serial primary key, Firstname varchar(50), Lastname varchar(50), Birthdate timestamp, age int)");
-        script.push({ sql: insertSql,
-                    params: {
-                        Firstname: 'James', 
-                        Lastname: 'O\'Connor', 
-                        Birthdate: new Date(1957,7,9), 
-                        Age: 62 }
-                    });
-        for (let i=0; i<1000; i++) {                     
-            script.push({ sql: insertSql,
-                        params: {
-                            Firstname: 'John'+i, 
-                            Lastname: 'Doe-'+i, 
-                            Birthdate: new Date(2001,5,8), 
-                            Age: 18 }                    
-                        });
+    bo.createValidate = bo.updateValidate 
+
+    return bo
+}
+
+/* Example of using a combination of database commands 
+   and CRUD operations to perform database operations */
+async function test1(next) {
+    let retErr 
+    try {
+        let contactBO=createContactBO(cn) 
+        await cn.openAsync({ host: 'localhost', user: 'apptestusr', password: 'apptestpw', database: 'apptest'})
+        await cn.execAsync('begin transaction')
+        await cn.execAsync('drop table if exists contact')
+        await cn.execAsync('create table contact( id serial primary key, firstname varchar(50), lastname varchar(50), birthdate timestamp, age int)')
+        let tli = await contactBO.createAsync({
+                firstname: 'James', 
+                lastname: 'O\'Connor', 
+                birthdate: new Date(1957,7,9), 
+                age: 62 } )
+        console.log(`Inserted ID #${tli}`)
+        console.log( JSON.stringify(contactBO.content))
+        for (let i=0; i<10; i++) {                     
+            await contactBO.createAsync({
+                    firstname: 'John'+i, 
+                    lastname: 'Doe-'+i, 
+                    birthdate: new Date(2001,5,8), 
+                    age: 18                   
+                })
         }
-        script.push("commit");
-        cn.exec(script, 
-            function(err) {
-                if (err) closeDatabase();
-                else test_getDataTable();
-            } );
-    }
 
-    function test_getDataTable() {
-        //cn.timeoutMilliSeconds = 1;
+        await contactBO.updateAsync({id:2, age: 57})
+        await cn.execAsync('commit')
 
-        cn.getDataTable("select * from contact",
-            function(err,dt) {
-                if (err) closeDatabase();
-                else { console.log( dt.json());  test_getScalar(); }
-            } ); 
-    }
+        let o = await contactBO.readAsync(2)
+        console.log( JSON.stringify(o))
+        console.log( JSON.stringify(contactBO.content))
 
-    function test_getScalar() {
-        cn.getScalar( { sql:"select age from contact where Firstname=@Firstname", params: { 'Firstname': 'James' } },
-            function(err,v) {
-                if (err) closeDatabase();
-                else {console.log(v); test_getlist();} 
-            } );             
-    }
+        contactBO.content.Age=23
+        await contactBO.updateAsync(undefined)
+        o = await contactBO.readAsync(2)
+        console.log( JSON.stringify(o))
 
-    function test_getlist(){
-        cn.getKVList( "select Firstname, Lastname from contact" ,    
-            function(err,v) {
-                if (err) closeDatabase();
-                else {console.log(JSON.stringify(l)); closeDatabase();}
-            } );                
-    }
+        await contactBO.deleteAsync(2)
 
-    function closeDatabase() {
-        cn.close(
-            () => { console.log('Database closed'); if(next) next(); },
-            () => { console.log('Error closing the database'); },
-        );
+        console.log(`Last insert Id: ${cn.lastInsertId}`)
+        
+        let dt = await cn.getDataTableAsync("select * from contact")
+        console.log( dt.json())
+
+        let age = await cn.getScalarAsync( { sql:"select age from contact where Firstname=@Firstname", params: { 'Firstname': 'James' } } )
+        console.log( age )
+        let kv = await cn.getKVListAsync( "select Firstname, Lastname from contact" )   
+        console.log( JSON.stringify(kv))
+
+    } catch(err) {
+        console.log(err)
+        retErr = err
+    } finally {
+        await cn.closeAsync()
     }
+    if(next) next(retErr)
 }
 
-function test2() {
-    console.log(cn.sqlParam(new Date(168,2,4, 7,8,9)));
-    console.log(cn.sqlParam("James O'Connor"));
-    console.log(cn.sqlParam(1492));
-    console.log(cn.sqlParam(1.6E-19));
-}
+test1Async = promisify (test1)
 
-test1();
-test2();
+
+
+test1Async();
+
 

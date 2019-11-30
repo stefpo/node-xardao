@@ -6,7 +6,7 @@
  * Email  : stephane.potelle@gmail.com
 ********************************************************************************/
 var rdao = require ('../lib/xardao.js'); 
-var promisify = require('util').promisify;
+const promisify = require('util').promisify
 
 cn = new rdao.Connection('sqlite');
 
@@ -41,21 +41,21 @@ async function test1(next) {
     let retErr 
     try {
         let contactBO=createContactBO(cn) 
-        await cn.openAsync('test_database.sqlite')
-        await cn.execAsync('begin transaction')
-        await cn.execAsync('drop table if exists contact')
-        await cn.execAsync('create table contact( Id integer primary key autoincrement, Firstname varchar(50), Lastname varchar(50), Birthdate timestamp, Age int)')
-        let tli = await contactBO.createAsync({
+        await cn.open('test_database.sqlite')
+        await cn.exec('begin transaction')
+        await cn.exec('drop table if exists contact')
+        await cn.exec('create table contact( Id integer primary key autoincrement, Firstname varchar(50), Lastname varchar(50), Birthdate timestamp, Age int)')
+        let tli = await contactBO.create({
                 Firstname: 'James', 
                 Lastname: 'O\'Connor', 
                 Birthdate: new Date(1957,7,9), 
                 Age: 62 } )
         console.log(`Inserted ID #${tli}`)
         console.log( JSON.stringify(contactBO.content))   
-        await contactBO.readAsync(undefined)
+        await contactBO.read(undefined)
         console.log( JSON.stringify(contactBO.content))           
         for (let i=0; i<10; i++) {                     
-            await contactBO.createAsync({
+            await contactBO.create({
                     Firstname: 'John'+i, 
                     Lastname: 'Doe-'+i, 
                     Birthdate: new Date(2001,5,8), 
@@ -63,35 +63,35 @@ async function test1(next) {
                 })
         }
 
-        await contactBO.updateAsync({Id:2, Age: 57})
-        await cn.execAsync('commit transaction')
+        await contactBO.update({Id:2, Age: 57})
+        await cn.exec('commit transaction')
 
-        let o = await contactBO.readAsync(2)
+        let o = await contactBO.read(2)
         console.log( JSON.stringify(o))
         console.log( JSON.stringify(contactBO.content))
 
         contactBO.content.Age=23
-        await contactBO.updateAsync(undefined)
-        o = await contactBO.readAsync(2)
+        await contactBO.update(undefined)
+        o = await contactBO.read(2)
         console.log( JSON.stringify(o))
 
-        await contactBO.deleteAsync(2)
+        await contactBO.delete(2)
 
         console.log(`Last insert Id: ${cn.lastInsertId}`)
         
-        let dt = await cn.getDataTableAsync("select * from contact")
-        console.log( dt.json())
+        let dt = await cn.getDataTable("select * from contact")
+        console.log( dt.JSON())
 
-        let age = await cn.getScalarAsync( { sql:"select age from contact where Firstname=@Firstname", params: { 'Firstname': 'James' } } )
+        let age = await cn.getScalar( { sql:"select age from contact where Firstname=@Firstname", params: { 'Firstname': 'James' } } )
         console.log( age )
-        let kv = await cn.getKVListAsync( "select Firstname, Lastname from contact" )   
+        let kv = await cn.getKVList( "select Firstname, Lastname from contact" )   
         console.log( JSON.stringify(kv))
 
     } catch(err) {
-        console.log(err)
+        console.log(err.stack)
         retErr = err
     } finally {
-        await cn.closeAsync()
+        await cn.close()
     }
     if(next) next(retErr)
 }
@@ -100,6 +100,6 @@ test1Async = promisify (test1)
 
 
 
-test1Async();
+test1();
 
 

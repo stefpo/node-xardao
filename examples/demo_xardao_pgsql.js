@@ -81,6 +81,10 @@ async function test1(next) {
         let dt = await cn.getDataTable("select * from contact")
         console.log( dt.JSON())
 
+        console.log("OBJECTS")
+        let oc = await cn.getObjects("select * from contact")
+        console.log( JSON.stringify(oc,undefined,4))        
+
         let age = await cn.getScalar( { sql:"select age from contact where Firstname=@Firstname", params: { 'Firstname': 'James' } } )
         console.log( age )
         let kv = await cn.getKVList( "select Firstname, Lastname from contact" )   

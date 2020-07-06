@@ -14,3 +14,8 @@ It provides the basic functions of a database driver through the same interface 
 * Execute SQL statement, eithe individually or sequentially
 
 It also provides a base CRUD adapter that can be used as the foundation for creating business objects
+
+The package DOES NOT specify the original driver as dependencies. This is done on purpose bacause you 
+generally use only one type of database in your project.
+
+The underlying database driver module must be installed in your project

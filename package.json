@@ -7,6 +7,7 @@
     "demo_sqlite3": "cd examples && node demo_xardao_sqlite3.js",
     "demo_mariadb": "cd examples && node demo_xardao_mariadb.js",
     "demo_pgsql": "cd examples && node demo_xardao_pgsql.js",
+    "demo_mssql": "cd examples && node demo_xardao_mssql.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Stephane Potelle",

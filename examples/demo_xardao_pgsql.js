@@ -49,7 +49,7 @@ async function test1(next) {
         let tli = await contactBO.create({
                 firstname: 'James', 
                 lastname: 'O\'Connor', 
-                birthdate: new Date(1957,7,9), 
+                birthdate: new Date(1957,7,9, 12,0,0), 
                 age: 62 } )
         console.log(`Inserted ID #${tli}`)
         console.log( JSON.stringify(contactBO.content))
@@ -57,7 +57,7 @@ async function test1(next) {
             await contactBO.create({
                     firstname: 'John'+i, 
                     lastname: 'Doe-'+i, 
-                    birthdate: new Date(2001,5,8), 
+                    birthdate: new Date(2001,5,8,18,0,0), 
                     age: 18                   
                 })
         }

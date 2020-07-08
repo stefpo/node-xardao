@@ -90,6 +90,10 @@ async function test1(next) {
         let kv = await cn.getKVList( "select Firstname, Lastname from contact" )   
         console.log( JSON.stringify(kv))
 
+        console.log("Single object")
+        let so = await cn.getSingleObject ( "select * from contact" )   
+        console.log( JSON.stringify(so))
+
     } catch(err) {
         console.log(err)
         retErr = err

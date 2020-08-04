@@ -1,15 +1,18 @@
 # xardao
+--------
+## Overview
 
 Xardao Asynchronous Relational Database Access Object
 
 A library to standardize datadase interface in Node without obscuring SQL.
-Currently supports SQLite and MariaDB (mysql)
+Currently supports SQLite, MariaDB (mysql), PostgreSQL, SQL server
 
 The library is fully asynchronous and provides both a callback and a promise version of all functions.
 
 It provides the basic functions of a database driver through the same interface for all databases:
 
-* Read a set of rows to a data table
+* Read query result to an object
+* Read a set of rows to a data table or array of objects
 * Read a single value
 * Execute SQL statement, eithe individually or sequentially
 
@@ -19,3 +22,6 @@ The package DOES NOT specify the original driver as dependencies. This is done o
 generally use only one type of database in your project.
 
 The underlying database driver module must be installed in your project
+
+`a = Connection ( connSpec )`
+

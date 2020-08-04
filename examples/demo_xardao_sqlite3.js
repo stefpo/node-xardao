@@ -8,6 +8,8 @@
 var rdao = require ('../lib/xardao.js'); 
 const promisify = require('util').promisify
 
+cn = new rdao.Connection('sqlite');
+
 function logError(e) {
     console.log('Error '+ e)
 }
@@ -36,16 +38,10 @@ function createContactBO(conn) {
 /* Example of using a combination of database commands 
    and CRUD operations to perform database operations */
 async function test1(next) {
-    let cn1 = new rdao.Connection( { driver:'sqlite', database: 'test_database.sqlite', options: { debugMode: true, pooled: true } } );
-    await cn1.open()
-    await cn1.close()
-
-    let cn = new rdao.Connection( { driver:'sqlite', database: 'test_database.sqlite', options: { debugMode: true, pooled: true } } );
-
     let retErr 
     try {
         let contactBO=createContactBO(cn) 
-        await cn.open()
+        await cn.open('test_database.sqlite')
         await cn.exec('begin transaction')
         await cn.exec('drop table if exists contact')
         await cn.exec('create table contact( Id integer primary key autoincrement, Firstname varchar(50), Lastname varchar(50), Birthdate timestamp, Age int)')

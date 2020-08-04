@@ -2,7 +2,7 @@
   "name": "xardao",
   "version": "1.0.7",
   "description": "Common Relational Data Access library",
-  "xmain": "./lib/xardao.js",
+  "main": "./lib/xardao.js",
   "scripts": {
     "demo_sqlite3": "cd examples && node demo_xardao_sqlite3.js",
     "demo_mariadb": "cd examples && node demo_xardao_mariadb.js",

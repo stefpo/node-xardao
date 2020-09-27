@@ -44,7 +44,7 @@ async function test1(next) {
         await cn.open({ host: 'localhost', user: 'root', password: 'xenon21', database: 'apptest'})
         await cn.exec('start transaction')
         await cn.exec('drop table if exists contact')
-        await cn.exec('create table contact( Id integer primary key auto_increment, Firstname varchar(50), Lastname varchar(50), Birthdate timestamp, Age int)')
+        await cn.exec('create table contact( Id integer primary key auto_increment, Firstname varchar(50), Lastname varchar(50), Birthdate datetime, Age int)')
         let tli = await contactBO.create({
                 Firstname: 'James', 
                 Lastname: 'O\'Connor', 

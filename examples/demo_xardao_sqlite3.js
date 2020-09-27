@@ -41,7 +41,10 @@ async function test1(next) {
     let retErr 
     try {
         let contactBO=createContactBO(cn) 
-        await cn.open('test_database.sqlite')
+        await cn.open({ database: "test_database.sqlite",
+                        initSql: [ "PRAGMA foreign_keys = '1';",
+                                   "PRAGMA autovacuum = '1';"] })
+
         await cn.exec('begin transaction')
         await cn.exec('drop table if exists contact')
         await cn.exec('create table contact( Id integer primary key autoincrement, Firstname varchar(50), Lastname varchar(50), Birthdate timestamp, Age int)')

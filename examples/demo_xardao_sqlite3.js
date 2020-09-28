@@ -82,11 +82,11 @@ async function test1(next) {
 
         console.log(`Last insert Id: ${cn.lastInsertId}`)
         
-        let dt = await cn.getDataTable("select * from contact")
+        let dt = await cn.getDataTable( { sql: "select * from contact", options: { useSnakeCase: true }  })
         console.log( dt.JSON())
 
         console.log("OBJECTS")
-        let oc = await cn.getObjects("select * from contact")
+        let oc = await cn.getObjects( { sql: "select * from contact", options: { useSnakeCase: true }  })
         console.log( JSON.stringify(oc,undefined,4))        
 
         let age = await cn.getScalar( { sql:"select age from contact where Firstname=@Firstname", params: { 'Firstname': 'James' } } )
@@ -95,7 +95,7 @@ async function test1(next) {
         console.log( JSON.stringify(kv))
 
         console.log("Single object")
-        let so = await cn.getSingleObject ( "select * from contact" )   
+        let so = await cn.getSingleObject ( { sql: "select * from contact", options: { useSnakeCase: true }  })
         console.log( JSON.stringify(so))
 
     } catch(err) {

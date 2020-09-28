@@ -1,6 +1,6 @@
 {
   "name": "xardao",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Common Relational Data Access library",
   "main": "./lib/xardao.js",
   "scripts": {
@@ -15,6 +15,7 @@
   "dependencies": {
     "mysql": "^2.18.1",
     "pg": "^8.3.3",
+    "sqlite3": "^5.0.0",
     "tedious": "^9.2.1"
   }
 }

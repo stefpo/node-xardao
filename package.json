@@ -1,6 +1,6 @@
 {
   "name": "xardao",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Common Relational Data Access library",
   "main": "./lib/xardao.js",
   "scripts": {
@@ -17,5 +17,9 @@
     "pg": "^8.3.3",
     "sqlite3": "^5.0.0",
     "tedious": "^9.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://framagit.org/stefpo/xardao.git"
   }
 }

@@ -37,14 +37,22 @@ function createContactBO(conn) {
 
 /* Example of using a combination of database commands 
    and CRUD operations to perform database operations */
-async function test1(next) {
+async  function test1() {
     let retErr 
     try {
-        let contactBO=createContactBO(cn) 
         await cn.open({ host: 'localhost', user: 'root', password: 'xenon21', database: 'apptest'})
         await cn.exec('start transaction')
         await cn.exec('drop table if exists contact')
-        await cn.exec('create table contact( Id integer primary key auto_increment, Firstname varchar(50), Lastname varchar(50), Birthdate datetime, Age int)')
+        await cn.exec(`create table contact ( 
+            Id int primary key auto_increment, 
+            Firstname varchar(50), 
+            Lastname varchar(50), 
+            Birthdate datetime , 
+            Email varchar(80),
+            Age int)`)
+
+        let contactBO=createContactBO(cn) 
+        
         let tli = await contactBO.create({
                 Firstname: 'James', 
                 Lastname: 'O\'Connor', 
@@ -99,13 +107,7 @@ async function test1(next) {
     } finally {
         await cn.close()
     }
-    if(next) next(retErr)
-}
+} 
 
-test1Async = promisify (test1)
-
-
-
-test1();
-
+test1()
 

@@ -43,7 +43,7 @@ async function test1(next) {
     try {
         let contactBO=createContactBO(cn) 
         await cn.open({ host: 'localhost', user: 'apptestusr', password: 'apptestpw', database: 'apptest'})
-        await cn.exec('begin transaction')
+        await cn.beginTrans()
         await cn.exec('drop table if exists contact')
         await cn.exec('create table contact( id serial primary key, firstname varchar(50), lastname varchar(50), birthdate timestamp, age int)')
         let tli = await contactBO.create({
@@ -63,7 +63,7 @@ async function test1(next) {
         }
 
         await contactBO.update({id:2, age: 57})
-        await cn.exec('commit')
+        await cn.commitTrans()
 
         let o = await contactBO.read(2)
         console.log( JSON.stringify(o))
@@ -93,6 +93,30 @@ async function test1(next) {
         console.log("Single object")
         let so = await cn.getSingleObject ( "select * from contact" )   
         console.log( JSON.stringify(so))
+
+
+        console.log("Adding 5000 rows")
+        // cn.debugMode = true
+        
+        await cn.beginTrans()
+        contactBO.createValidate = contactBO.defaultCreateValidate
+        for ( let i = 0; i < 5000; i++  ) {
+            await contactBO.create({
+                firstname: 'John'+i, 
+                lastname: 'Doe-'+i, 
+                birthdate: new Date(2001,5,8,18,0,0), 
+                age: 18                   
+            })      
+        }
+        await cn.commitTrans()
+        console.log("Done")   
+            
+
+        console.log("Eachrow")
+        await cn.forEachRow( "select * from contact", function( row, callback ) {
+            console.log(JSON.stringify(row))
+            callback()
+        })        
 
     } catch(err) {
         console.log(err)

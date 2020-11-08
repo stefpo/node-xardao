@@ -5,10 +5,13 @@
  * Author : Stephane Potelle 
  * Email  : stephane.potelle@gmail.com
 ********************************************************************************/
+
 var rdao = require ('../lib/xardao.js'); 
 const promisify = require('util').promisify
 
-cn = new rdao.Connection('sqlite');
+cn = rdao.Connection('sqlite')
+
+const sleep = promisify ( function (t, callback ) { setTimeout(callback, t)} )
 
 function logError(e) {
     console.log('Error '+ e)
@@ -45,7 +48,7 @@ async function test1(next) {
                         initSql: [ "PRAGMA foreign_keys = '1';",
                                    "PRAGMA autovacuum = '1';"] })
 
-        await cn.exec('begin transaction')
+        await cn.beginTrans()
         await cn.exec('drop table if exists contact')
         await cn.exec('create table contact( Id integer primary key autoincrement, Firstname varchar(50), Lastname varchar(50), Birthdate timestamp, Age int)')
         let tli = await contactBO.create({
@@ -67,7 +70,7 @@ async function test1(next) {
         }
 
         await contactBO.update({Id:2, Age: 57})
-        await cn.exec('commit transaction')
+        await cn.commitTrans()
 
         let o = await contactBO.read(2)
         console.log( JSON.stringify(o))
@@ -97,6 +100,27 @@ async function test1(next) {
         console.log("Single object")
         let so = await cn.getSingleObject ( { sql: "select * from contact", options: { useSnakeCase: true }  })
         console.log( JSON.stringify(so))
+
+        console.log("Adding 5000 rows")
+        await cn.beginTrans()
+        contactBO.createValidate = contactBO.defaultCreateValidate
+        for ( let i = 0; i < 5000; i++  ) {
+            await contactBO.create({
+                Firstname: 'John'+i, 
+                Lastname: 'Doe-'+i, 
+                Birthdate: new Date(2001,5,8, 18,0,0), 
+                Age: 18                   
+            })            
+        }
+        await cn.commitTrans()
+        console.log("Done")
+
+        console.log("Eachrow")
+        cn.forEachRow( "select * from contact", function(row, callback) {
+            console.log(JSON.stringify(row))
+            //callback()
+        })
+        console.log("Done")
 
     } catch(err) {
         console.log(err.stack)

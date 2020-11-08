@@ -44,11 +44,11 @@ async function test1(next) {
         await cn.open({ server: 'localhost', 
                             authentication: { type: 'default',
                                 options: { userName: 'sa', password: 'Xenon21$'} },
-                            options: { encrypt:true, database: 'apptest'}}
+                            options: { encrypt:false, database: 'apptest'}}
                             )
         await cn.exec('if exists ( select * from sys.tables where name=\'contact\') drop table contact')
         await cn.exec('create table contact( Id integer primary key identity, Firstname varchar(50), Lastname varchar(50), Birthdate datetime, Age int)')
-        //await cn.exec('begin transaction')
+        await cn.beginTrans()
         let tli = await contactBO.create({
                 Firstname: 'James', 
                 Lastname: 'O\'Connor', 
@@ -66,7 +66,7 @@ async function test1(next) {
         }
 
         await contactBO.update({Id:2, Age: 57})
-        //await cn.exec('commit')
+        await cn.commitTrans()
 
         let o = await contactBO.read(2)
         console.log( JSON.stringify(o))
@@ -84,6 +84,10 @@ async function test1(next) {
         let dt = await cn.getDataTable("select * from contact")
         console.log( dt.JSON())
 
+        console.log("OBJECTS")
+        let oc = await cn.getObjects("select * from contact")
+        console.log( JSON.stringify(oc,undefined,4))    
+
         let age = await cn.getScalar( { sql:"select age from contact where Firstname=@Firstname", params: { 'Firstname': 'James' } } )
         console.log( age )
         let kv = await cn.getKVList( "select Firstname, Lastname from contact" )   
@@ -91,10 +95,30 @@ async function test1(next) {
 
         console.log("Single object")
         let so = await cn.getSingleObject ( "select * from contact" )   
-        console.log( JSON.stringify(so))        
+        console.log( JSON.stringify(so))     
+        
+        console.log("Adding 5000 rows")
+        await cn.beginTrans()
+        contactBO.createValidate = contactBO.defaultCreateValidate
+        for ( let i = 0; i < 5000; i++  ) {
+            await contactBO.create({
+                Firstname: 'John'+i, 
+                Lastname: 'Doe-'+i, 
+                Birthdate: new Date(2001,5,8, 18,0,0), 
+                Age: 18                   
+            })            
+        }
+        await cn.commitTrans()
+        console.log("Done")        
+        
+        console.log("Eachrow")
+        await cn.forEachRow( "select * from contact", function(row, callback ) {
+            console.log(JSON.stringify(row))
+            callback()
+        })            
 
     } catch(err) {
-        console.log(err)
+        console.log(err.stack)
         retErr = err
     } finally {
         await cn.close()

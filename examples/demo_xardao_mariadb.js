@@ -41,7 +41,8 @@ async  function test1() {
     let retErr 
     try {
         await cn.open({ host: 'localhost', user: 'root', password: 'xenon21', database: 'apptest'})
-        await cn.exec('start transaction')
+        //await cn.exec('start transaction')
+        cn.beginTrans()
         await cn.exec('drop table if exists contact')
         await cn.exec(`create table contact ( 
             Id int primary key auto_increment, 
@@ -70,7 +71,7 @@ async  function test1() {
         }
 
         await contactBO.update({Id:2, Age: 57})
-        await cn.exec('commit')
+        cn.commitTrans()
 
         let o = await contactBO.read(2)
         console.log( JSON.stringify(o))
@@ -99,7 +100,27 @@ async  function test1() {
 
         console.log("Single object")
         let so = await cn.getSingleObject ( "select * from contact" )   
-        console.log( JSON.stringify(so))        
+        console.log( JSON.stringify(so))       
+
+        console.log("Adding 5000 rows")
+        await cn.beginTrans()
+        contactBO.createValidate = contactBO.defaultCreateValidate
+        for ( let i = 0; i < 5000; i++  ) {
+            await contactBO.create({
+                Firstname: 'John'+i, 
+                Lastname: 'Doe-'+i, 
+                Birthdate: new Date(2001,5,8, 18,0,0), 
+                Age: 18                   
+            })            
+        }
+        await cn.commitTrans()
+        console.log("Done")        
+
+        console.log("Eachrow")
+        await cn.forEachRow( "select * from contact", function(row, callback ) {
+            console.log(JSON.stringify(row))
+            callback()
+        })     
 
     } catch(err) {
         console.log(err)

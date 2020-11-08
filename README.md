@@ -132,7 +132,7 @@ Executes multiple queries in a sequence.
 ##### Connection#exec( queryOrArrayOfQueries, [callback] )
 Provides a unique function for single and multiple queries. Act as an alias for *execSingle* or *execMultiple*, depending on the type of the first parmameter.
 
-#### Transaction
+#### Working with transactions
 The transaction methods provide a common wait of managing transactions.
 
 ##### Connection#beginTrans()
@@ -146,4 +146,17 @@ Rolls back current transaction. If no transaction is in progress, this call has 
 
 
 ### Class Datatable
+This class provides a storage structure for the results. The columns and rows are stored separately which give the advantage that the columns information is available event of the resultset has no rows.
+
+The Datatable object has the structure below:
+
+```javascript
+    {
+        columns: [], // Each columns is a string 
+        rows: []     // Each row is an array of values, in the same order as the columns
+    }
+```
+
+*_Note_* The use of datatables may be deprecated in future releases.
+
 

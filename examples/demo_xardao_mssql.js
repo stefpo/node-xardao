@@ -44,8 +44,20 @@ async function test1(next) {
         await cn.open({ server: 'localhost', 
                             authentication: { type: 'default',
                                 options: { userName: 'sa', password: 'Xenon21$'} },
-                            options: { encrypt:false, database: 'apptest'}}
+                            options: { encrypt:false, database: 'master'}}
                             )
+        try {
+               await cn.exec("CREATE DATABASE apptest")
+        } catch (e) {
+            console.log(e.message)
+        }
+        await cn.exec("USE apptest")
+//        await cn.close() 
+        /*await cn.open({ server: 'localhost', 
+                            authentication: { type: 'default',
+                                options: { userName: 'sa', password: 'Xenon21$'} },
+                            options: { encrypt:false, database: 'apptest'}}
+                            )*/
         await cn.exec('if exists ( select * from sys.tables where name=\'contact\') drop table contact')
         await cn.exec('create table contact( Id integer primary key identity, Firstname varchar(50), Lastname varchar(50), Birthdate datetime, Age int)')
         await cn.beginTrans()

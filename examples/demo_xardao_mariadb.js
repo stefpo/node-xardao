@@ -99,13 +99,13 @@ async  function test1() {
         console.log( JSON.stringify(kv))
 
         console.log("Single object")
-        let so = await cn.getSingleObject ( "select * from contact" )   
+        let so = await cn.getSingleObject ( "select * from contact where 1=0" )   
         console.log( JSON.stringify(so))       
 
         console.log("Adding 5000 rows")
         await cn.beginTrans()
         contactBO.createValidate = contactBO.defaultCreateValidate
-        for ( let i = 0; i < 5000; i++  ) {
+        for ( let i = 0; i < 5; i++  ) {
             await contactBO.create({
                 Firstname: 'John'+i, 
                 Lastname: 'Doe-'+i, 

@@ -1,6 +1,6 @@
 {
   "name": "xardao",
-  "version": "1.1.7",
+  "version": "1.1.9",
   "description": "Common Relational Data Access library",
   "main": "./lib/xardao.js",
   "scripts": {
@@ -13,10 +13,7 @@
   "author": "Stephane Potelle",
   "license": "MIT",
   "dependencies": {
-    "mysql": "^2.18.1",
-    "pg": "^8.4.2",
-    "sqlite3": "^5.0.0",
-    "tedious": "^9.2.1"
+
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 {
   "name": "xardao",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "description": "Common Relational Data Access library",
   "main": "./lib/xardao.js",
   "scripts": {

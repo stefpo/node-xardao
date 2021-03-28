@@ -1,3 +1,4 @@
+
 # xardao
 --------
 ## Overview
@@ -159,4 +160,43 @@ The Datatable object has the structure below:
 
 *_Note_* The use of datatables may be deprecated in future releases.
 
+### Integration with ExpressJS
 
+In an web server context, each page call requires an isolated connection. It then becomes necessary to ensure that connections always get closed after each HTTP request.
+
+Xardao provides 2 methods to ensure that the open connection will always be closed:
+
++ A decorator function to use in the router
++ A connection opener function
+
+#### xardao.express.usingDBConnection(connSpec, controller)
+"Decorates"  the function *Controller* by adding an open connection to request object.
+
+```javascript
+    // In the router:
+
+    routes.get('/dtjson',   xardao.express.usingDBConnection(connSpec, controllers.dtjson))
+
+    // In the controller, simply use the connection:
+
+    req.conn.getDataTable('select * from assets', function(err, dt) {
+      if (!err) {
+        dt.className ='basic-table'
+        res.render('dt', { title: 'Express', hitcount: req.session.hitcount, tbl: dt })
+        next()
+      }
+      next(err)
+    })
+```
+
+#### xardao.express.connect(connSpec, req, res)
+Returns the connection specified by *connSpec*. A listener to the 'finish' event of the response is 
+added to guarantee that the connection will always be closed, so there is no need to write specific code
+to ensure proper connection closing.
+
+```javascript
+    // In the controller
+
+    let conn = await xardao.express.connect(req.appconfig.database, req, res)
+
+```

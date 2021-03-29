@@ -106,7 +106,7 @@ async function test1(next) {
         contactBO.createValidate = contactBO.defaultCreateValidate
         for ( let i = 0; i < 5000; i++  ) {
             await contactBO.create({
-                Firstname: 'John'+i, 
+                FIRSTNAME: 'John'+i, 
                 Lastname: 'Doe-'+i, 
                 Birthdate: new Date(2001,5,8, 18,0,0), 
                 Age: 18                   

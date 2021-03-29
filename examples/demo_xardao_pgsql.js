@@ -96,7 +96,6 @@ async function test1(next) {
 
 
         console.log("Adding 5000 rows")
-        // cn.debugMode = true
         
         await cn.beginTrans()
         contactBO.createValidate = contactBO.defaultCreateValidate

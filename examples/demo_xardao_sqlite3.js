@@ -9,7 +9,7 @@
 var rdao = require ('../lib/xardao.js'); 
 const promisify = require('util').promisify
 
-cn = rdao.Connection('sqlite')
+cn = rdao.Connection('sqlite:///test_database.sqlite')
 
 const sleep = promisify ( function (t, callback ) { setTimeout(callback, t)} )
 
@@ -44,9 +44,10 @@ async function test1(next) {
     let retErr 
     try {
         let contactBO=createContactBO(cn) 
-        await cn.open({ database: "test_database.sqlite",
-                        initSql: [ "PRAGMA foreign_keys = '1';",
-                                   "PRAGMA autovacuum = '1';"] })
+        await cn.open()
+
+        await cn.exec([   "PRAGMA foreign_keys = '1';",
+                    "PRAGMA autovacuum = '1';"])
 
         await cn.beginTrans()
         await cn.exec('drop table if exists contact')

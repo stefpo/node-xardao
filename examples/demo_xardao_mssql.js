@@ -40,18 +40,19 @@ function createContactBO(conn) {
 async function test1(next) {
     let retErr 
     try {
-        let contactBO=createContactBO(cn) 
         await cn.open({ server: 'localhost', 
                             authentication: { type: 'default',
                                 options: { userName: 'sa', password: 'Xenon21$'} },
                             options: { encrypt:false, database: 'master'}}
                             )
+                            
         try {
                await cn.exec("CREATE DATABASE apptest")
         } catch (e) {
             console.log(e.message)
         }
         await cn.exec("USE apptest")
+        let contactBO=createContactBO(cn) 
 //        await cn.close() 
         /*await cn.open({ server: 'localhost', 
                             authentication: { type: 'default',

@@ -9,8 +9,6 @@
 var rdao = require ('../lib/xardao.js'); 
 var promisify = require('util').promisify;
 
-cn = new rdao.Connection('mssql');
-
 function logError(e) {
     console.log('Error '+ e)
 }
@@ -39,21 +37,26 @@ function createContactBO(conn) {
    and CRUD operations to perform database operations */
 async function test1(next) {
     let retErr 
+    //let cn = new rdao.Connection('mssql')
+    let cn = new rdao.Connection('mssql://sa:Xenon21$@localhost/apptest?encrypt=false&validateBulkLoadParameters=false')
+    //cn.debugMode = true
     try {
+        /*
         await cn.open({ server: 'localhost', 
                             authentication: { type: 'default',
                                 options: { userName: 'sa', password: 'Xenon21$'} },
                             options: { encrypt:false, database: 'master'}}
                             )
-                            
+        */     
+        await cn.open()               
         try {
-               await cn.exec("CREATE DATABASE apptest")
+               //await cn.exec("CREATE DATABASE apptest")
         } catch (e) {
             console.log(e.message)
         }
-        await cn.exec("USE apptest")
+        //await cn.exec("USE apptest")
+
         let contactBO=createContactBO(cn) 
-//        await cn.close() 
         /*await cn.open({ server: 'localhost', 
                             authentication: { type: 'default',
                                 options: { userName: 'sa', password: 'Xenon21$'} },
@@ -110,10 +113,10 @@ async function test1(next) {
         let so = await cn.getSingleObject ( "select * from contact" )   
         console.log( JSON.stringify(so))     
         
-        console.log("Adding 5000 rows")
+        console.log("Adding 5 rows")
         await cn.beginTrans()
         contactBO.createValidate = contactBO.defaultCreateValidate
-        for ( let i = 0; i < 5000; i++  ) {
+        for ( let i = 0; i < 5; i++  ) {
             await contactBO.create({
                 Firstname: 'John'+i, 
                 Lastname: 'Doe-'+i, 

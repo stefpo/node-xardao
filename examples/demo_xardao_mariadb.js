@@ -9,6 +9,7 @@
 var rdao = require ('../lib/xardao.js'); 
 var promisify = require('util').promisify;
 
+//cn = new rdao.Connection('mariadb');
 cn = new rdao.Connection('mariadb://root:xenon21@localhost/apptest');
 
 function logError(e) {
@@ -41,6 +42,7 @@ async  function test1() {
     let retErr 
     try {
         await cn.open()
+        //await cn.open({ host: 'localhost', user: 'root', password: 'xenon21', database: 'apptest'})
         //await cn.exec('start transaction')
         cn.beginTrans()
         await cn.exec('drop table if exists contact')
@@ -102,10 +104,10 @@ async  function test1() {
         let so = await cn.getSingleObject ( "select * from contact where 1=0" )   
         console.log( JSON.stringify(so))       
 
-        console.log("Adding 5000 rows")
+        console.log("Adding 500 rows")
         await cn.beginTrans()
         contactBO.createValidate = contactBO.defaultCreateValidate
-        for ( let i = 0; i < 5; i++  ) {
+        for ( let i = 0; i < 500; i++  ) {
             await contactBO.create({
                 Firstname: 'John'+i, 
                 Lastname: 'Doe-'+i, 

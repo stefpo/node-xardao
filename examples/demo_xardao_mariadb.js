@@ -10,7 +10,7 @@ var rdao = require ('../lib/xardao.js');
 var promisify = require('util').promisify;
 
 //cn = new rdao.Connection('mariadb');
-cn = new rdao.Connection('mariadb://root:xenon21@localhost/apptest');
+
 
 function logError(e) {
     console.log('Error '+ e)
@@ -40,7 +40,9 @@ function createContactBO(conn) {
    and CRUD operations to perform database operations */
 async  function test1() {
     let retErr 
+    let cn
     try {
+        cn = new rdao.Connection('mariadb://root:xenon21@localhost/apptest')
         await cn.open()
         //await cn.open({ host: 'localhost', user: 'root', password: 'xenon21', database: 'apptest'})
         //await cn.exec('start transaction')

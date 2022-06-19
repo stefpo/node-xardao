@@ -44,8 +44,6 @@ async  function test1() {
     try {
         cn = new rdao.Connection('mariadb://root:xenon21@localhost/apptest')
         await cn.open()
-        //await cn.open({ host: 'localhost', user: 'root', password: 'xenon21', database: 'apptest'})
-        //await cn.exec('start transaction')
         cn.beginTrans()
         await cn.exec('drop table if exists contact')
         await cn.exec(`create table contact ( 

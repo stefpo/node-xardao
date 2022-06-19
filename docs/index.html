@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Xardao documentation</title>  
+<script src="js/csi.js"></script>  
+<script src="js/autotoc.js"></script> 
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body onload="insertToc('toc', 'contents', 'h2')">
+    <script>include("header.html")</script>  
+    <section>
+        <div  class="container">
+            <h1>Xardao documentation</h1>
+            <div id="toc" ><h2>Content</h2></div> 
+            <div id="contents">
+                <script>include("under-construction.html")</script>   
+                <h2>Introducing Xardao</h2>
+                <p>Xardao is a universal database driver. It wraps around database-specific drivers
+                   to provide a simple, elegant way to execute SQL statements. Currently supported 
+                   databases are:
+                   <ul>
+                    <li>MariaDB / Mysql</li>
+                    <li>PostgresQL</li>
+                    <li>Microsoft SQL Server</li>
+                    <li>SQLite</li>
+                   </ul>
+                   Xardao support both the callback and promise styles.<br>
+                   The best way to demonstrates how Xardao makes working with databases simple 
+                   is an example:
+                </p>
+                <pre><code class="javascript">
+    // Let's import the module                 
+    const xardao = require ('xardao')
+
+    // Then create a connection                   
+    cn = new xardao.Connection('mariadb://root:rootpw@localhost/apptest')
+
+    // and open it
+    await cn.open()
+
+    // Get data
+    let oc = await cn.getObjects("select * from contact")
+
+    // Finally look at the result
+    console.log( JSON.stringify(oc,undefined,4))                     
+                </code></pre>
+                <p>The output will look like this:</p>
+                <pre><code class="json">
+    [
+        {
+            "id": 1,
+            "firstname": "James",
+            "lastname": "O'Connor",
+            "birthdate": "1957-08-09 11:00:00",
+            "age": 62
+        },
+        {
+            "id": 3,
+            "firstname": "John1",
+            "lastname": "Doe-1",
+            "birthdate": "2001-06-08 16:00:00",
+            "age": 18
+        },
+        {
+            "id": 4,
+            "firstname": "John2",
+            "lastname": "Doe-2",
+            "birthdate": "2001-06-08 16:00:00",
+            "age": 18
+        }
+    ]
+                </code></pre> 
+                <p>Well, that is only teaser. Xardao provides much more:</p>
+                <ul>
+                    <li>You can use named query parameters in the one-line statement.</li>
+                    <li>A dynamic CRUD generator makes it easy to build your data access model.</li>
+                </ul>
+                <h2>Establishing connections</h2>
+                <p>Establishing a database connection required 2 steps:</p>
+                <ul>
+                    <li>Create an instance of the connection object.</li>
+                    <li>Open the connection</li>
+                </ul>
+                <p>To create the Connection object simply use the Connection generator:</p>
+                <pre><code class="javascript">
+    let cn = new xardao.Connection('mariadb://root:rootpw@localhost/apptest')
+                </code></pre>                    
+                <p>Then open it:</p>
+                <pre><code class="javascript">
+    // Using promises
+    await cn.open()
+
+    // Using a callback function
+    cn.open( function() { 
+        // Place your code here
+    })
+               </code></pre>                    
+                <p>The connection string in the following format: &lt;driverName&gt;://[[&lt;user&qt;:&lt;password&gt;]@&lt;hostname&gt;/]&lt;database&gt;[?&lt;parameters&gt;]<br>
+                Below are basic examples to connect using default options:</p>
+                <ul>
+                    <li>Mariadb / Mysql: <code>mariadb://user:userpw@localhost/apptest</code></li>
+                    <li>Postgresql: <code>postgres://user:userpw@localhost/apptest</code></li>
+                    <li>MS SQL Server: <code>mssql://user:userpw@localhost/apptest</code></li>
+                    <li>SQLite: <code>sqlite://database</code></li>
+                </ul>
+                <p>For complete details of connection string parameters, please check the section "Connection string reference"</p>
+                <h2>Reading and updating using SQL Statements</h2>
+                <p>Xardao provides 3 simple methods for reading and updating data:</p>
+                <ul>
+                    <li>Connection#exec performs SQL statements that do not return data.</li>
+                    <li>Connection#getObjects excutes SQL statements and returns data in the form of an array of objects.</li>
+                    <li>Connection#getScalar excutes SQL statements and returns the first field of the first row in the result set.</li>
+                </ul>
+                <p>Other SQL-related funtions are described in "Function reference".</p>
+                <h3>Using exec and getObjects</h3>
+                <p>Calls to exec and getObjects are very similar. The description below applies to both functions.</p>
+                <p>Static SQL statement:</p>
+                <pre><code class="javascript">
+    let oc = await cn.getObjects("select * from contact")
+                </code></pre>
+
+                <p>To call using parameters and behavior options, you need to pass an object that contains at least 2 properties:</p>
+                <pre><code class="javascript">
+    let oc = await cn.getObjects({
+        sql: "select * from contact where id = @id",
+        params: { id: 4 },
+        options: { useSnakeCase: true } // This is optional.
+        })
+                </code></pre>
+                    <ul>
+                    <li><b>sql</b>: the sql statement including named parameters. Named parameters are prefixed with '@'.</li>
+                    <li><b>params</b>: a dictionary (object) containing the parameters. The field name must match the parameter names 
+                        in the SQL statement without their '@' prefix.</li>
+                    <li><b>Options</b>: an optional list of options that alter the way the function works.</li>                                        
+                </ul>
+                <h3>Getting the ID of inserted records:</h3>
+                <p>Xardao Connection <code>lastInsertId</code> contains the ID of the last inserted record, when running inserts statements.</p>
+                <p><b>Note</b> that Postgresql does not provide the last insert id mechanism when using <code>exec()</code>. Instead, you need to use 
+                    <code>getScalar()</code> and specify which field needs to be returned:
+                </p>
+                <pre><code class="javascript">
+    let newId = await cn.getScalar("insert into contact(firstname, lastname) values ('John','Doe') returning id ")
+                </code></pre>                
+
+                <h2>Using the CRUDDataAdapter</h2>
+                /!\ This section is under construction.
+                <h2>Function reference</h2>
+                <p>Asynchronous functions support both the promise and callback style. When no callback function is provided, the 
+                    promise style is assumed and the call to the function must include the <code>await</code> predicate.
+                </p>
+                <p><b>xardao.Connection(URI)</b><br>
+                    Create a new connection as specified by URI. (See Connection string reference).
+                </p>
+                <p><b>Connection#open([callback])</b><br>
+                    Opens the connection.
+                </p>     
+                <p><b>Connection#close([callback])</b><br>
+                    Closes the connection.
+                </p> 
+                <p><b>Connection#exec(query &lt;string || object&gt;, [callback])</b><br>
+                    Executes the query. If query is an object, you can specify parameters and options (see "Using exec and getObjects").
+                </p>                                                
+                <p><b>Connection#getObjects(query &lt;string || object&gt;, [callback])</b><br>
+                    Executes the query. If query is an object, you can specify parameters and options (see "Using exec and getObjects").<br>
+                    Returns an array of objects.
+                </p>                                                
+                <p><b>Connection#getSingleObject(query &lt;string || object&gt;, [callback])</b><br>
+                    Executes the query. If query is an object, you can specify parameters and options (see "Using exec and getObjects").<br>
+                    Returns the first row as an object.
+                </p>   
+                <p><b>Connection#getScalar(query &lt;string || object&gt;, [callback])</b><br>
+                    Executes the query. If query is an object, you can specify parameters and options (see "Using exec and getObjects").<br>
+                    Returns the first field of the row as single value.
+                </p>                                                                  
+                <p><b>Connection#getList(query &lt;string || object&gt;, [callback])</b><br>
+                    Executes the query. If query is an object, you can specify parameters and options (see "Using exec and getObjects").<br>
+                    Returns an array containing only the first field of each row.
+                    For example:
+                </p>             
+                <pre><code class="javascript">
+    let newId = await cn.getList("select id from myLOV")
+                </code></pre>                                                                                              
+                <p>may return something like:</p>
+                <pre><code class="json">
+    [ "New", "Active", "Inactive" ]
+                </code></pre>                        
+                </p>  
+                <p><b>Connection#getKVList(query &lt;string || object&gt;, [callback])</b><br>
+                    Executes the query. If query is an object, you can specify parameters and options (see "Using exec and getObjects").<br>
+                    Returns a dictionary (object) where the first field of each row is the key name and the second field of each row is the value.<br>
+                    For example:
+                </p>             
+                <pre><code class="javascript">
+    let newId = await cn.getKVList("select id, description from myLOV")
+                </code></pre>                                                                                              
+                <p>may return something like:</p>
+                <pre><code class="json">
+    {
+        "New": "The item was just added.",
+        "Active": "The item is fully functional.",
+        "Inactive": "The item may not be used."
+    }
+                </code></pre>                                                                                              
+
+                <h2>Integration with Express</h2>
+                <p>When using a database with Express, it is important to ensure that all DB connections are properly closed after 
+                   executing a handler.<br>
+                   The Xardao method <code>express.connect</code> opens a connection while making sure it will close properly when the response closes.<br>
+                   To open a connection that will automatically close in your handler, follow the example below:
+                </p>
+                <pre><code class="javascript">
+    function myHandler(req, res, next ) {
+        let conn = await xardao.express.connect("postgres://user:userpw@localhost/apptest") 
+
+        // Your code here...
+
+        // No need to close the connection. It will close at the same time as the response.
+    }
+                </code></pre>      
+                <p><b>Note:</b>Do not forget the the <code>await</code> predicate, as your <code>ardao.express.connect</code> returns a promise !</p>              
+
+
+                <h2>Connection string reference</h2>
+                    <h3>Mariadb / Mysql</h3>
+                    <h3>Postgresql</h3>
+                    <h3>MS SQL Server</h3>
+                    <h3>SQLite</h3>
+            </div>
+        </div>
+    </section>
+    <script>include("footer.html")</script>  
+</body>
+</html>

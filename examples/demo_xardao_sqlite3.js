@@ -9,8 +9,6 @@
 var rdao = require ('../lib/xardao.js'); 
 const promisify = require('util').promisify
 
-cn = rdao.Connection('sqlite:///test_database.sqlite')
-
 const sleep = promisify ( function (t, callback ) { setTimeout(callback, t)} )
 
 function logError(e) {
@@ -42,6 +40,7 @@ function createContactBO(conn) {
    and CRUD operations to perform database operations */
 async function test1(next) {
     let retErr 
+    let cn = rdao.Connection('sqlite:///test_database.sqlite')
     try {
         let contactBO=createContactBO(cn) 
         await cn.open()

@@ -2,3 +2,4 @@ examples
 xardao-*.tgz
 test_database.sqlite
 node_modules
+docs

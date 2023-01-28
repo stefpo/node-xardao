@@ -42,7 +42,7 @@ async  function test1() {
     let retErr 
     let cn
     try {
-        cn = new rdao.Connection('mariadb://root:xenon21@localhost/apptest')
+        cn = new rdao.Connection('mariadb://root:xenon21@127.0.0.1/apptest')
         await cn.open()
         cn.beginTrans()
         await cn.exec('drop table if exists contact')

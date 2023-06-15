@@ -6,7 +6,7 @@
  * Email  : stephane.potelle@gmail.com
 ********************************************************************************/
 
-var rdao = require ('../lib/xardao.js'); 
+var xardao = require ('../lib/xardao.js'); 
 var promisify = require('util').promisify;
 
 function logError(e) {
@@ -37,8 +37,8 @@ function createContactBO(conn) {
    and CRUD operations to perform database operations */
 async function test1(next) {
     let retErr 
-    //let cn = new rdao.Connection('mssql')
-    let cn = new rdao.Connection('mssql://sa:Xenon21$@localhost/apptest?encrypt=false&validateBulkLoadParameters=false')
+    //let cn = new xardao.Connection('mssql')
+    let cn = new xardao.Connection('mssql://sa:Xenon21$@localhost/apptest?encrypt=false&validateBulkLoadParameters=false')
     //cn.debugMode = true
     try {
         /*
@@ -97,9 +97,6 @@ async function test1(next) {
 
         console.log(`Last insert Id: ${cn.lastInsertId}`)
         
-        let dt = await cn.getDataTable("select * from contact")
-        console.log( dt.JSON())
-
         console.log("OBJECTS")
         let oc = await cn.getObjects("select * from contact")
         console.log( JSON.stringify(oc,undefined,4))    
@@ -127,13 +124,7 @@ async function test1(next) {
         await cn.commitTrans()
         console.log("Done")        
         
-        console.log("Eachrow")
-        await cn.forEachRow( "select * from contact", function(row, callback ) {
-            console.log(JSON.stringify(row))
-            callback()
-        })            
-
-    } catch(err) {
+     } catch(err) {
         console.log(err.stack)
         retErr = err
     } finally {

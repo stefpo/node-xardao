@@ -6,10 +6,10 @@
  * Email  : stephane.potelle@gmail.com
 ********************************************************************************/
 
-var rdao = require ('../lib/xardao.js'); 
+var xardao = require ('../lib/xardao.js'); 
 var promisify = require('util').promisify;
 
-//cn = new rdao.Connection('mariadb');
+//cn = new xardao.Connection('mariadb');
 
 
 function logError(e) {
@@ -42,7 +42,8 @@ async  function test1() {
     let retErr 
     let cn
     try {
-        cn = new rdao.Connection('mariadb://root:xenon21@localhost/apptest')
+        cn = new xardao.Connection('mariadb://root:xenon21@localhost/apptest')
+        //cn.debugMode = true
         await cn.open()
         cn.beginTrans()
         await cn.exec('drop table if exists contact')
@@ -88,9 +89,6 @@ async  function test1() {
 
         console.log(`Last insert Id: ${cn.lastInsertId}`)
         
-        let dt = await cn.getDataTable("select * from contact")
-        console.log( dt.JSON())
-
         console.log("OBJECTS")
         let oc = await cn.getObjects("select * from contact")
         console.log( JSON.stringify(oc,undefined,4)) 
@@ -117,12 +115,6 @@ async  function test1() {
         }
         await cn.commitTrans()
         console.log("Done")        
-
-        console.log("Eachrow")
-        await cn.forEachRow( "select * from contact", function(row, callback ) {
-            console.log(JSON.stringify(row))
-            callback()
-        })     
 
     } catch(err) {
         console.log(err)

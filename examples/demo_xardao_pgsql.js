@@ -7,10 +7,8 @@
 ********************************************************************************/
 
 
-var rdao = require ('../lib/xardao.js'); 
+var xardao = require ('../lib/xardao.js'); 
 var promisify = require('util').promisify;
-
-cn = new rdao.Connection('pg');
 
 function logError(e) {
     console.log('Error '+ e)
@@ -41,8 +39,10 @@ function createContactBO(conn) {
 async function test1(next) {
     let retErr 
     try {
+        cn = new xardao.Connection('pg://apptestusr:apptestpw@rasp01/apptest');
+        await cn.open()
+
         let contactBO=createContactBO(cn) 
-        await cn.open({ host: 'localhost', user: 'apptestusr', password: 'apptestpw', database: 'apptest'})
         await cn.beginTrans()
         await cn.exec('drop table if exists contact')
         await cn.exec('create table contact( id serial primary key, firstname varchar(50), lastname varchar(50), birthdate timestamp, age int)')
@@ -78,9 +78,6 @@ async function test1(next) {
 
         console.log(`Last insert Id: ${cn.lastInsertId}`)
         
-        let dt = await cn.getDataTable("select * from contact")
-        console.log( dt.JSON())
-
         console.log("OBJECTS")
         let oc = await cn.getObjects("select * from contact")
         console.log( JSON.stringify(oc,undefined,4))        
@@ -110,12 +107,6 @@ async function test1(next) {
         await cn.commitTrans()
         console.log("Done")   
             
-
-        console.log("Eachrow")
-        await cn.forEachRow( "select * from contact", function( row, callback ) {
-            console.log(JSON.stringify(row))
-            callback()
-        })        
 
     } catch(err) {
         console.log(err)

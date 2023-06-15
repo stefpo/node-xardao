@@ -99,7 +99,7 @@
         // Place your code here
     })
                </code></pre>                    
-                <p>The connection string in the following format: &lt;driverName&gt;://[[&lt;user&qt;:&lt;password&gt;]@&lt;hostname&gt;/]&lt;database&gt;[?&lt;parameters&gt;]<br>
+                <p>The connection string in the following format: protocol &gt;://[&lt;username&gt;[:&lt;password&gt;]@]&lt;hostname&gt;/&lt;database&gt;[?&lt;parameters&gt;]<br>
                 Below are basic examples to connect using default options:</p>
                 <ul>
                     <li>Mariadb / Mysql: <code>mariadb://user:userpw@localhost/apptest</code></li>
@@ -107,7 +107,7 @@
                     <li>MS SQL Server: <code>mssql://user:userpw@localhost/apptest</code></li>
                     <li>SQLite: <code>sqlite://database</code></li>
                 </ul>
-                <p>For complete details of connection string parameters, please check the section "Connection string reference"</p>
+                <p>For complete details of connection string parameters, please check the section <a href="#csref">"Connection string reference"</a></p>
                 <h2>Reading and updating using SQL Statements</h2>
                 <p>Xardao provides 3 simple methods for reading and updating data:</p>
                 <ul>
@@ -224,11 +224,21 @@
                 <p><b>Note:</b>Do not forget the the <code>await</code> predicate, as your <code>ardao.express.connect</code> returns a promise !</p>              
 
 
-                <h2>Connection string reference</h2>
+                <a name="csref"></a><h2>Connection string reference</h2>
+                    <p>
+                        The connection string uses standard URI format: 
+                        <pre><code>&lt;protocol&gt;://[&lt;username&gt;[:&lt;password&gt;]@]&lt;hostname&gt;/&lt;database&gt;[?&lt;paramname&gt;=&lt;value&gt;[&&lt;paramname&gt;=&lt;value&gt;]...]</code>
+                        </pre>
+                    </p>
+
                     <h3>Mariadb / Mysql</h3>
+                    <p>Protocol for mariaDB or Mysql can be "mariadb" or "mysql". Both will work the same way.</p>
                     <h3>Postgresql</h3>
+                    <p>Protocol for mariaDB or PostgresQL can be "pg", "pgsql" or "postgres". All will work the same way.</p>
                     <h3>MS SQL Server</h3>
+                    <p>Protocol for mariaDB or Mysql can be "ms" or "mssql". Both will work the same way.</p>
                     <h3>SQLite</h3>
+                    <p>Protocol for mariaDB or Mysql can be "sqlite" or "sqlite3". Both will work the same way.</p>
                 <h2>License</h2>
                 <p>Xardao is made available under <a href="https://opensource.org/licenses/MIT">MIT License</a></p>
             </div>

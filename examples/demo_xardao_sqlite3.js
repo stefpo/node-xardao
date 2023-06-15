@@ -6,7 +6,7 @@
  * Email  : stephane.potelle@gmail.com
 ********************************************************************************/
 
-var rdao = require ('../lib/xardao.js'); 
+var xardao = require ('../lib/xardao.js'); 
 const promisify = require('util').promisify
 
 const sleep = promisify ( function (t, callback ) { setTimeout(callback, t)} )
@@ -40,7 +40,7 @@ function createContactBO(conn) {
    and CRUD operations to perform database operations */
 async function test1(next) {
     let retErr 
-    let cn = rdao.Connection('sqlite:///test_database.sqlite')
+    let cn = xardao.Connection('sqlite:///test_database.sqlite')
     try {
         let contactBO=createContactBO(cn) 
         await cn.open()
@@ -85,9 +85,6 @@ async function test1(next) {
 
         console.log(`Last insert Id: ${cn.lastInsertId}`)
         
-        let dt = await cn.getDataTable( { sql: "select * from contact", options: { useSnakeCase: true }  })
-        console.log( dt.JSON())
-
         console.log("OBJECTS")
         let oc = await cn.getObjects( { sql: "select * from contact", options: { useSnakeCase: true }  })
         console.log( JSON.stringify(oc,undefined,4))        
@@ -113,13 +110,6 @@ async function test1(next) {
             })            
         }
         await cn.commitTrans()
-        console.log("Done")
-
-        console.log("Eachrow")
-        cn.forEachRow( "select * from contact", function(row, callback) {
-            console.log(JSON.stringify(row))
-            //callback()
-        })
         console.log("Done")
 
     } catch(err) {

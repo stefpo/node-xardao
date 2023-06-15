@@ -12,3 +12,5 @@ node_modules/*
 temp/*
 !temp/readme
 play/*
+
+examples/conninfo.js

@@ -1,0 +1,22 @@
+{
+  "name": "xardao",
+  "version": "1.3.2",
+  "description": "Common Relational Data Access library",
+  "main": "./lib/xardao.js",
+  "scripts": {
+    "demo_sqlite3": "cd examples && node demo_xardao_sqlite3.js",
+    "demo_mariadb": "cd examples && node demo_xardao_mariadb.js",
+    "demo_pgsql": "cd examples && node demo_xardao_pgsql.js",
+    "demo_mssql": "cd examples && node demo_xardao_mssql.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stephane Potelle",
+  "license": "MIT",
+  "dependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://framagit.org/stefpo/xardao.git"
+  },
+  "keywords": ["database","relational","sql","mysql","mariadb","sqlite","sqlite3","mssql","postgresql","pg"]
+}

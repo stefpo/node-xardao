@@ -1,6 +1,10 @@
 {
   "name": "xardao",
+<<<<<<< HEAD
   "version": "1.3.2",
+=======
+  "version": "1.2.4",
+>>>>>>> d3a59a067f82099759ed1842cad0771fcd30b537
   "description": "Common Relational Data Access library",
   "main": "./lib/xardao.js",
   "scripts": {

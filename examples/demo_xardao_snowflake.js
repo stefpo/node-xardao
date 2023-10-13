@@ -60,6 +60,17 @@ async function test1(next) {
 
         console.log(await cn.getScalar('SELECT COUNT(*) FROM ASSET'))
 
+        console.log('Downloading large data set')
+        let ts = Date.now();
+        o = await cn.getObjects({ sql: `
+            SELECT M.NAME MANUFACTURER, P.MANUFACTURERMODELNUMBER__C, A.SERIALNUMBER  
+            FROM asset A
+            INNER JOIN Product2 P ON P.ID = A.PRODUCT2ID
+            INNER JOIN MANUFACTURER__C M ON M.Id = P.MANUFACTURER__C 
+        `})        
+
+        console.log(`Completed in ${ (Date.now() -ts) / 1000 } s ${o.length} records`)
+
     } catch(err) {
         console.log(err.stack)
         retErr = err

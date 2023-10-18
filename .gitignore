@@ -12,4 +12,9 @@ node_modules/*
 temp/*
 !temp/readme
 play/*
+<<<<<<< HEAD
 examples
+=======
+
+examples/conninfo.js
+>>>>>>> version/1.4

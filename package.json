@@ -1,6 +1,6 @@
 {
   "name": "xardao",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "description": "Common Relational Data Access library",
   "main": "./lib/xardao.js",
   "scripts": {
@@ -13,6 +13,7 @@
   "author": "Stephane Potelle",
   "license": "MIT",
   "dependencies": {
+    "snowflake-sdk": "^2.1.0"
   },
   "repository": {
     "type": "git",

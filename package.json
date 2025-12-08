@@ -1,6 +1,6 @@
 {
   "name": "xardao",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "type": "module",
   "description": "Common Relational Data Access library",
   "main": "./lib/xardao.js",
@@ -13,11 +13,10 @@
   },
   "author": "Stephane Potelle",
   "license": "MIT",
-  "dependencies": {
-  },
+  "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/stefpo/xardao.git"
+    "url": "git+https://github.com/stefpo/xardao.git"
   },
   "keywords": [
     "database",

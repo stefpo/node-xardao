@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 
 import * as mo from '../lib/driver_sqlite3.js'
+=======
+const mo = require("../lib/driver_mssql")
+>>>>>>> b6c32ed02ef7499b64ccdebb5fa8ddf6b31071e8
 
 function functionInfo(funcOrClass) {
     if ( typeof funcOrClass === 'function' ) {
@@ -29,14 +33,22 @@ function documentNameSpace(mod, namespace) {
                 console.log("  " + fi.signature)
                 let cls = mod[f]
                 let excludeProp = Object.getOwnPropertyNames(Object)
+<<<<<<< HEAD
                 for (let m of Object.getOwnPropertyNames( cls ).filter (x => x!="constructor")) {
+=======
+                for (m of Object.getOwnPropertyNames( cls ).filter (x => x!="constructor")) {
+>>>>>>> b6c32ed02ef7499b64ccdebb5fa8ddf6b31071e8
                     if (excludeProp.indexOf(m) == -1 ) {
                         let mi = functionInfo(cls[m])
                         console.log("    static "  + mi.signature)
                     }
                 }                
                 let clsProto = mod[f].prototype
+<<<<<<< HEAD
                 for (let m of Object.getOwnPropertyNames( clsProto ).filter (x => x!="constructor")) {
+=======
+                for (m of Object.getOwnPropertyNames( clsProto ).filter (x => x!="constructor")) {
+>>>>>>> b6c32ed02ef7499b64ccdebb5fa8ddf6b31071e8
                     let mi = functionInfo(clsProto[m])
                     console.log("    "  + mi.signature)
                 }

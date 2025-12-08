@@ -1,0 +1,5 @@
+docker run --rm\
+	-p 33306:3306 \
+	--name mariadb_test_instance \
+	-e MARIADB_ROOT_PASSWORD=ThisDatabaseIsForTesting@Only \
+	mariadb:latest

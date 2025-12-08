@@ -6,8 +6,7 @@
  * Email  : stephane.potelle@gmail.com
 ********************************************************************************/
 
-var xardao = require ('../lib/xardao.js'); 
-var promisify = require('util').promisify;
+import * as  xardao from '../lib/xardao.js' 
 
 function logError(e) {
     console.log('Error '+ e)

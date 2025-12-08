@@ -6,11 +6,7 @@
  * Email  : stephane.potelle@gmail.com
 ********************************************************************************/
 
-var xardao = require ('../lib/xardao.js'); 
-var promisify = require('util').promisify;
-
-//cn = new xardao.Connection('mariadb');
-
+import * as xardao from '../lib/xardao.js' 
 
 function logError(e) {
     console.log('Error '+ e)
@@ -42,7 +38,12 @@ async  function test1() {
     let retErr 
     let cn
     try {
-        cn = new xardao.Connection('mariadb://root:xenon21@localhost/apptest')
+        cn = new xardao.Connection('mariadb://root:ThisDatabaseIsForTesting@Only@localhost:33306/mysql')
+        await cn.open()
+        await cn.exec("create database apptest")
+        await cn.close()
+
+        cn = new xardao.Connection('mariadb://root:ThisDatabaseIsForTesting@Only@localhost:33306/apptest')
         //cn.debugMode = true
         await cn.open()
         cn.beginTrans()

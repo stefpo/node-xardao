@@ -7,6 +7,7 @@
 
 *.code-workspace
 *.sqlite
+*.log
 
 node_modules/*
 temp/*

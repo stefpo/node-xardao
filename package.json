@@ -29,6 +29,7 @@
     "mssql",
     "postgresql",
     "snowflake",
+    "snowflake",
     "pg"
   ]
 }

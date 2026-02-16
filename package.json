@@ -1,6 +1,7 @@
 {
   "name": "xardao",
-  "version": "1.4.3",
+  "version": "1.6.2",
+  "type": "module",
   "description": "Common Relational Data Access library",
   "main": "./lib/xardao.js",
   "scripts": {
@@ -12,11 +13,10 @@
   },
   "author": "Stephane Potelle",
   "license": "MIT",
-  "dependencies": {
-  },
+  "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "https://framagit.org/stefpo/xardao.git"
+    "url": "git+https://github.com/stefpo/xardao.git"
   },
   "keywords": [
     "database",
@@ -28,6 +28,7 @@
     "sqlite3",
     "mssql",
     "postgresql",
+    "snowflake",
     "pg"
   ]
 }

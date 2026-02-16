@@ -1,0 +1,5 @@
+docker run --rm\
+	-p 55432:5432 \
+	--name pg_test_instance \
+	-e POSTGRES_PASSWORD=ThisDatabaseIsForTesting@Only$ \
+	postgres:latest

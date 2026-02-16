@@ -6,8 +6,8 @@
  * Email  : stephane.potelle@gmail.com
 ********************************************************************************/
 
-var xardao = require ('../lib/xardao.js'); 
-var promisify = require('util').promisify;
+import * as  xardao from '../lib/xardao.js' 
+import { snowflakeConnStr } from './conninfo.js'
 
 function logError(e) {
     console.log('Error '+ e)
@@ -26,7 +26,8 @@ async function test1(next) {
     please check https://docs.snowflake.com/en/developer-guide/node-js/nodejs-driver-install for detailed parameter reference
 
     */
-    let cn = new xardao.Connection(require('./conninfo').snowflake)
+    
+    let cn = new xardao.Connection(snowflakeConnStr())
     try {
         await cn.open()
         console.log("Connection open")
@@ -63,7 +64,7 @@ async function test1(next) {
         console.log('Downloading large data set')
         let ts = Date.now();
         o = await cn.getObjects({ sql: `
-            SELECT M.NAME MANUFACTURER, P.MANUFACTURERMODELNUMBER__C, A.SERIALNUMBER  
+            SELECT TOP 250000 M.NAME MANUFACTURER, P.MANUFACTURERMODELNUMBER__C, A.SERIALNUMBER  
             FROM asset A
             INNER JOIN Product2 P ON P.ID = A.PRODUCT2ID
             INNER JOIN MANUFACTURER__C M ON M.Id = P.MANUFACTURER__C 

@@ -7,8 +7,8 @@
 ********************************************************************************/
 
 
-var xardao = require ('../lib/xardao.js'); 
-var promisify = require('util').promisify;
+import * as xardao from '../lib/xardao.js'
+
 
 function logError(e) {
     console.log('Error '+ e)
@@ -38,8 +38,14 @@ function createContactBO(conn) {
    and CRUD operations to perform database operations */
 async function test1(next) {
     let retErr 
+    let cn
     try {
-        cn = new xardao.Connection('pg://apptestusr:apptestpw@rasp01/apptest');
+        cn = new xardao.Connection('pg://postgres:ThisDatabaseIsForTesting@Only$@localhost:55432/postgres');
+        await cn.open()
+        cn.exec("CREATE DATABASE apptest")
+        await cn.close()
+
+        cn = new xardao.Connection('pg://postgres:ThisDatabaseIsForTesting@Only$@localhost:55432/apptest');
         await cn.open()
 
         let contactBO=createContactBO(cn) 
@@ -116,9 +122,6 @@ async function test1(next) {
     }
     if(next) next(retErr)
 }
-
-test1Async = promisify (test1)
-
 
 
 test1();

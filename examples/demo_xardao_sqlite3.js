@@ -6,10 +6,8 @@
  * Email  : stephane.potelle@gmail.com
 ********************************************************************************/
 
-var xardao = require ('../lib/xardao.js'); 
-const promisify = require('util').promisify
-
-const sleep = promisify ( function (t, callback ) { setTimeout(callback, t)} )
+import * as xardao from '../lib/xardao.js'
+import { promisify } from 'util'
 
 function logError(e) {
     console.log('Error '+ e)
@@ -121,7 +119,7 @@ async function test1(next) {
     if(next) next(retErr)
 }
 
-test1Async = promisify (test1)
+const test1Async = promisify (test1)
 
 
 

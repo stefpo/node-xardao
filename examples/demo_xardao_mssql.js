@@ -6,8 +6,7 @@
  * Email  : stephane.potelle@gmail.com
 ********************************************************************************/
 
-var xardao = require ('../lib/xardao.js'); 
-var promisify = require('util').promisify;
+import * as  xardao from '../lib/xardao.js'
 
 function logError(e) {
     console.log('Error '+ e)
@@ -37,17 +36,15 @@ function createContactBO(conn) {
    and CRUD operations to perform database operations */
 async function test1(next) {
     let retErr 
-    //let cn = new xardao.Connection('mssql')
-    let cn = new xardao.Connection('mssql://sa:Xenon21$@localhost/apptest?encrypt=false&validateBulkLoadParameters=false')
-    //cn.debugMode = true
+    let cn
     try {
-        /*
-        await cn.open({ server: 'localhost', 
-                            authentication: { type: 'default',
-                                options: { userName: 'sa', password: 'Xenon21$'} },
-                            options: { encrypt:false, database: 'master'}}
-                            )
-        */     
+        cn = new xardao.Connection('mssql://sa:ThisDatabaseIsForTesting@Only$@localhost:11433/master?encrypt=false&validateBulkLoadParameters=false')
+        await cn.open()               
+        await cn.exec("CREATE DATABASE apptest")
+        await cn.close()
+
+        cn = new xardao.Connection('mssql://sa:ThisDatabaseIsForTesting@Only$@localhost:11433/apptest?encrypt=false&validateBulkLoadParameters=false')
+        
         await cn.open()               
         try {
                //await cn.exec("CREATE DATABASE apptest")
@@ -132,9 +129,6 @@ async function test1(next) {
     }
     if(next) next(retErr)
 }
-
-test1Async = promisify (test1)
-
 
 
 test1();

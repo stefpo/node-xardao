@@ -13,7 +13,8 @@
   },
   "author": "Stephane Potelle",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stefpo/xardao.git"

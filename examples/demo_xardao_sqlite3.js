@@ -7,7 +7,8 @@
 ********************************************************************************/
 
 import * as xardao from '../lib/xardao.js'
-import { promisify } from 'util'
+import * as url from 'url'
+import * as path from 'path'
 
 function logError(e) {
     console.log('Error '+ e)
@@ -38,7 +39,7 @@ function createContactBO(conn) {
    and CRUD operations to perform database operations */
 async function test1(next) {
     let retErr 
-    let cn = xardao.Connection('sqlite:///test_database.sqlite')
+    let cn = xardao.Connection('sqlite:///data/test_database.sqlite')
     try {
         let contactBO=createContactBO(cn) 
         await cn.open()
@@ -119,9 +120,9 @@ async function test1(next) {
     if(next) next(retErr)
 }
 
-const test1Async = promisify (test1)
+process.chdir(path.dirname(url.fileURLToPath(import.meta.url)))
 
-
+console.log( `Working directory is ${process.cwd()}`)
 
 test1();
 
